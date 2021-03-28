@@ -1,5 +1,5 @@
 <template>
-  <div class="container is-max-desktop" style="height: 100%">
+  <div class="container is-max-desktop px-4" style="height: 100%">
     <div class="columns is-vcentered is-mobile" style="height: 100%">
       <div class="column">
         <h1 class="has-text-centered title mb-6">Get started</h1>
