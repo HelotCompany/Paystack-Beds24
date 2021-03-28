@@ -2,8 +2,9 @@
   "name": "front",
   "version": "0.1.0",
   "private": true,
-  "autor": {
-    "email": "h.ayinlamouhayad.com"
+  "author": {
+    "name": "HOUNKANRIN AYINLA Mouhayad I.",
+    "email": "h.ayinlamouhayad@gmail.com"
   },
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -15,14 +15,11 @@ $github-invert: findColorInvert($github);
 @import "~bulma/sass/utilities/derived-variables";
 
 // 3. Add new color variables to the color map.
-$addColors: (
-  "twitter":($twitter, $twitter-invert),
-  "linkedin": ($linkedin, $linkedin-invert),
-  "github": ($github, $github-invert)
-);
+@import "colors";
 $colors: map-merge($colors, $addColors);
 
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 
 // 4. Provide custom buefy overrides and site styles here
+@import "global";
