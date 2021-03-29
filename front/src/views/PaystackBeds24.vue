@@ -1,7 +1,27 @@
 <template>
   <div class="container is-max-desktop px-4 mt-6" style="height: 100%">
-    <h1 class="has-text-centered title">Paystack + Beds24</h1>
-    <h4 class="has-text-centered subtitle mb-6">Manage your account effectively</h4>
+    <div class="level is-mobile">
+      <div class="level-left"></div>
+      <div class="level-item">
+        <div>
+          <div class="">
+            <h1 class="has-text-centered title">Paystack + Beds24</h1>
+          </div>
+          <div class="">         
+            <h4 class="has-text-centered subtitle">Manage your account effectively</h4>
+          </div>
+        </div>
+      </div>
+      <div class="level-right">
+        <b-button 
+            type="is-primary"
+            expanded
+            label="Logout"
+            icon-right="logout"
+            class="has-text-weight-bold"
+            @click="logout()"/>
+      </div>
+    </div>
     <form class="mb-6">
       <div class="columns is-multiline is-centered">
         <div class="column is-6">
@@ -11,7 +31,8 @@
             :message="infoError.firstName">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.firstName">
+              v-model="infoData.firstName"
+              :disabled="isEditData && !edit">
             </b-input>
           </b-field>
         </div>
@@ -22,7 +43,8 @@
             :message="infoError.lastName">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.lastName">
+              v-model="infoData.lastName"
+              :disabled="isEditData && !edit">
             </b-input>
           </b-field>
         </div>
@@ -33,7 +55,8 @@
             :message="infoError.email">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.email">
+              v-model="infoData.email"
+              :disabled="isEditData && !edit">
             </b-input>
           </b-field>
         </div>
@@ -44,7 +67,8 @@
             :message="infoError.phone">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.phone">
+              v-model="infoData.phone"
+              :disabled="isEditData && !edit">
             </b-input>
           </b-field>
         </div>
@@ -55,17 +79,34 @@
             :message="infoError.paystackKey">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.paystackKey">
+              v-model="infoData.paystackKey"
+              :disabled="isEditData && !edit">
             </b-input>
           </b-field>
         </div>
-        <div class="column is-3">
+        <div class="column is-3" v-if="edit">
+          <b-button 
+            type="is-primary"
+            expanded
+            label="Cancel"
+            class="has-text-weight-bold"
+            @click="edit = false"/>
+        </div>
+        <div class="column is-3" v-if="!isEditData || edit">
           <b-button 
             type="is-primary"
             expanded
             label="Save"
             class="has-text-weight-bold"
-            @click="save"/>
+            @click="save()"/>
+        </div>
+        <div class="column is-3" v-else>
+          <b-button 
+            type="is-primary"
+            expanded
+            label="Edit"
+            class="has-text-weight-bold"
+            @click="edit = true"/>
         </div>
       </div>
     </form>
@@ -86,7 +127,7 @@
           expanded
           label="Subscribe"
           class="has-text-weight-bold"
-          @click="subscribe"/>
+          @click="subscribe()"/>
       </div>
     </div>
     <div>
@@ -127,18 +168,21 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex';
 import { actionSubscribe } from '@/services/stripe';
 import { emailValidation } from '@/services/validation';
+import { db, auth } from '@/pluging/firebase';
+import getCurrentUser from '@/services/firebase';
 
 export default {
   data() {
     return {
       infoData: {
-        firstName: 'Jean', // Default values to pass the validation
-        lastName: 'PAUL', // Default values to pass the validation
-        email: 'jeanpaul@gmail.com', // Default values to pass the validation
-        phone: '000000000', // Default values to pass the validation
-        paystackKey: '78298NjhxjnchdnuujunBUUb87878B_7YUVGYG76', // Default values to pass the validation
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        paystackKey: '',
       },
       infoError: {
         firstName: '',
@@ -147,12 +191,24 @@ export default {
         phone: '',
         paystackKey: '',
       },
+      user: null,
       time: 4000,
       bed24Key: 'jnjJSDHUEDNSDUbsdbcdoicdncjefcuejcuehdcied_cenfdbchebd_efdncjcejcjeznjbb7CEBIè_77678èCENCEUHDIEU',
       payementUrl: 'odciefnjKBHDKSQJB_dej_B7EHDU3D3UDeç_d_d3EDYU3HDUA3_H3E73EDU3HD83IZDUHIFIOIuyudhuezgfhiehfd',
+      isEditData: false,
+      edit: false,
+    }
+  },
+  computed: {
+    ...mapGetters(['userEmail']),
+    isCurrentUser() {
+      return this.user && this.user.uid
     }
   },
   methods: {
+    ...mapMutations({
+      setEmail: 'SET_EMAIL',
+    }),
     async subscribe() {
       if (!emailValidation(this.infoData.email)) {
         this.$buefy.toast.open({
@@ -166,7 +222,10 @@ export default {
         await actionSubscribe({ email: this.infoData.email});
         loadingComponent.close();
       } catch (error) {
-        console.log(error);
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
         loadingComponent.close();
       }
     },
@@ -174,11 +233,44 @@ export default {
       if (!this.validation()) return;
       const loadingComponent = this.$buefy.loading.open();
       try {
-        // save in firebase
+        await db.collection("users").doc(this.user.uid).set(this.infoData);
+        this.$buefy.toast.open({
+          message: 'Information saved successfully',
+          type: 'is-success',
+        });
+        this.edit = false;
+        this.isEditData = true;
         loadingComponent.close();
       } catch (error) {
-        console.log(error);
         loadingComponent.close();
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
+      }
+    },
+    async getDataUser() {
+      const loadingComponent = this.$buefy.loading.open();
+      try {
+        this.user = await getCurrentUser();
+        this.infoData.email = this.user.email;
+        const doc = await db.collection("users").doc(this.user.uid).get();
+        if (doc.exists) {
+          this.infoData = doc.data();
+          this.isEditData = true;
+        }
+        loadingComponent.close();
+      } catch (error) {
+        loadingComponent.close();
+        if (error === null) {
+          this.setEmail('');
+          this.$router.push('/');
+          return;
+        }
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
       }
     },
     validation() {
@@ -233,13 +325,26 @@ export default {
         });
       }
     },
+    async logout() {
+      const loadingComponent = this.$buefy.loading.open();
+      try {
+        await auth.signOut();
+        this.setEmail('');
+        this.$router.push('/');
+        loadingComponent.close();
+      } catch (error) {
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
+        loadingComponent.close();
+      }
+    }
   },
-  mounted() {
+  async mounted() {
+    await this.getDataUser();
     if (this.$route.query.type) {
-      this.$buefy.toast.open({
-        message: this.$route.query,
-        type: 'is-success',
-      });
+      console.log(this.$route.query);
     }
   }
 }
