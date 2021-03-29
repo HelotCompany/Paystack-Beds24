@@ -104,4 +104,4 @@ dist
 # TernJS port file
 .tern-port
 
-./front/src/pluging/firebase.js
+front/src/pluging/firebase.js
