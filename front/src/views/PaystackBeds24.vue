@@ -344,7 +344,7 @@ export default {
   async mounted() {
     await this.getDataUser();
     if (this.$route.query.type) {
-      console.log(this.$route.query);
+      // TO DO
     }
   }
 }

@@ -10,7 +10,6 @@ HTTP.interceptors.request.use((request) => {
   };
   if (request.url.indexOf('http') === -1) {
     request.url = config.BASE_URL + request.url;
-    console.log(request.url);
   }
   return request;
 }, (error) => {
