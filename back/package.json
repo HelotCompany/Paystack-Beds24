@@ -12,6 +12,7 @@
     "producttion": "set NODE_ENV=production&& node server.js",
     "staging": "set NODE_ENV=staging&& node server.js",
     "dev": "set NODE_ENV=development&& nodemon server.js",
+    "start": "node server.js",
     "lint": "eslint"
   },
   "dependencies": {
