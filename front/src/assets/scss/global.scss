@@ -8,6 +8,9 @@ html, body, #app {
 }
 .custum-input {
   background-color: $primary;
+  &:disabled {
+    background-color: $primary;
+  }
 }
 .cercle {
   width: 29px;
