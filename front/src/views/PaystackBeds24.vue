@@ -339,6 +339,22 @@ export default {
         });
         loadingComponent.close();
       }
+    },
+    async suscriptionManagment() {
+      if (!this.$route.query.type) {
+        // TO DO
+      }
+      const loadingComponent = this.$buefy.loading.open();
+      try {
+        // TO DO
+        loadingComponent.close();
+      } catch (error) {
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
+        loadingComponent.close();
+      }
     }
   },
   async mounted() {
