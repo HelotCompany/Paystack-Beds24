@@ -11,4 +11,13 @@ module.exports = {
   STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   FRONT_DOMAIN: process.env.FRONT_DOMAIN,
+  PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+  URL_REDIRECT: process.env.URL_REDIRECT,
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId,
 }

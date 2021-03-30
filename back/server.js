@@ -2,10 +2,45 @@ const config = require('./config.js');
 const stripe = require('stripe')(config.STRIPE_SECRET_KEY);
 const cors = require('cors');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const { db } = require('./firebase.js');
+const paystack = require("paystack-api")(config.PAYSTACK_SECRET_KEY);
 
 app.use(express.json());
 app.use(cors());
+app.options('*', cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/', async (req, res) => {
+  try {
+    const { email, reference, amount, cy } = req.body;
+    const resultDoc = await db.collection('transaction_paystack').add({
+      email,
+      reference,
+      amount,
+      cy,
+      date: new Date(),
+    });
+    console.log('config.URL_REDIRECT', config.URL_REDIRECT);
+    const resultTransaction = await paystack.transaction.initialize({
+      email,
+      currency: cy,
+      amount: parseInt(amount, 10) * 100,
+      callback_url: `${config.URL_REDIRECT}/${reference}`,
+      reference: resultDoc.id,
+    })
+    res.redirect(resultTransaction.data.authorization_url);
+  } catch (error) {
+    console.error(error)
+    res.status(400);
+    return res.send({
+      error: {
+        message: error.message,
+      }
+    });
+  }
+})
 
 app.post('/create-checkout-session', async (req, res) => {
   const { priceId, email } = req.body;
