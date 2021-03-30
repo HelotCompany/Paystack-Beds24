@@ -38,12 +38,12 @@ export default {
           headers: { "Content-Type": "multipart/form-data" },
         })
         this.$buefy.toast.open({
-          message: '',
+          message: 'Beds24 is notify',
           type: 'is-success',
         });
       } catch (error) {
         this.$buefy.toast.open({
-          message: error.message,
+          message: `Error when notifying Bead24: ${error.message}`,
           type: 'is-danger',
         });
       }
