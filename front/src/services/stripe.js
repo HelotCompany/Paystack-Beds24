@@ -5,6 +5,7 @@ const priceId = 'price_1Ia26dL5hZhqJmovFqhhI95G';
 export async function actionSubscribe(data) {
   const response = (await createCheckoutSession({
     email: data.email,
+    userId: data.userId,
     priceId,
   })).data;
   const stripe = window.Stripe(response.publishableKey);

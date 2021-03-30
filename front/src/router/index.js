@@ -10,9 +10,14 @@ const routes = [
     component: () => import('../views/Register.vue')
   },
   {
-    path: '/RedirectPay/:bookId',
+    path: '/RedirectPay/:id/:bookId',
     name: 'RedirectPay',
     component: () => import('../views/RedirectPay.vue')
+  },
+  {
+    path: '/RedirectPayStripe/:id',
+    name: 'RedirectPayStripe',
+    component: () => import('../views/RedirectPayStripe.vue')
   },
   {
     path: '/PaystackBeds24',

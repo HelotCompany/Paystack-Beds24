@@ -74,7 +74,7 @@
         </div>
         <div class="column is-12">
           <b-field 
-            label="Paystack Public Key"
+            label="Paystack Secret Key"
             :type="infoError.paystackKey ? 'is-danger' : ''"
             :message="infoError.paystackKey">
             <b-input 
@@ -114,10 +114,10 @@
       <div class="column is-narrow">
         <div class="level is-mobile" style="height: 100%">
           <div class="level-left mr-3">
-            <div class="cercle cercle__inactive"></div>
+            <div class="cercle" :class="[ paysuccess ? 'cercle__active' : 'cercle__inactive' ]"></div>
           </div>
           <div class="level-right mr-6">
-            <span class="has-text-weight-bold">Inactive</span>
+            <span class="has-text-weight-bold"> {{ paysuccess ? 'Active' : 'Inactive' }} </span>
           </div>
         </div>
       </div>
@@ -193,10 +193,11 @@ export default {
       },
       user: null,
       time: 4000,
-      bed24Key: 'jnjJSDHUEDNSDUbsdbcdoicdncjefcuejcuehdcied_cenfdbchebd_efdncjcejcjeznjbb7CEBIè_77678èCENCEUHDIEU',
-      payementUrl: 'odciefnjKBHDKSQJB_dej_B7EHDU3D3UDeç_d_d3EDYU3HDUA3_H3E73EDU3HD83IZDUHIFIOIuyudhuezgfhiehfd',
+      bed24Key: '',
+      payementUrl: '',
       isEditData: false,
       edit: false,
+      paysuccess: false,
     }
   },
   computed: {
@@ -210,23 +211,32 @@ export default {
       setEmail: 'SET_EMAIL',
     }),
     async subscribe() {
-      if (!emailValidation(this.infoData.email)) {
+      if (!(
+        this.user.firstName === this.infoData.firstName &&
+        this.user.lastName === this.infoData.lastName &&
+        this.user.email === this.infoData.email &&
+        this.user.phone === this.infoData.phone &&
+        this.user.paystackKey === this.infoData.paystackKey
+      )) {
         this.$buefy.toast.open({
-          message: `Email address ${this.infoData.email} is not valid`,
+          message: 'Please save your data before continuing !!!',
           type: 'is-danger',
         });
         return;
       }
       const loadingComponent = this.$buefy.loading.open();
       try {
-        await actionSubscribe({ email: this.infoData.email});
+        await actionSubscribe({
+          email: this.infoData.email,
+          userId: this.user.uid
+        });
         loadingComponent.close();
       } catch (error) {
+        loadingComponent.close();
         this.$buefy.toast.open({
           message: error.message,
           type: 'is-danger',
         });
-        loadingComponent.close();
       }
     },
     async save() {
@@ -234,6 +244,12 @@ export default {
       const loadingComponent = this.$buefy.loading.open();
       try {
         await db.collection("users").doc(this.user.uid).set(this.infoData);
+        const doc = await db.collection("users").doc(this.user.uid).get();
+        this.user = {
+          ...this.user,
+          ...doc.data(),
+        }
+        console.log(this.user);
         this.$buefy.toast.open({
           message: 'Information saved successfully',
           type: 'is-success',
@@ -256,7 +272,21 @@ export default {
         this.infoData.email = this.user.email;
         const doc = await db.collection("users").doc(this.user.uid).get();
         if (doc.exists) {
-          this.infoData = doc.data();
+          const info = doc.data();
+          this.user = {
+            ...this.user,
+            ...info,
+          }
+          this.infoData = {
+            firstName: info.firstName,
+            lastName: info.lastName,
+            email: info.email,
+            phone: info.phone,
+            paystackKey: info.paystackKey,
+          };
+          this.paysuccess = !!info.paysuccess;
+          this.bed24Key = info.bed24Key ? info.bed24Key : '';
+          this.payementUrl = info.payementUrl ? info.payementUrl : '';
           this.isEditData = true;
         }
         loadingComponent.close();
@@ -304,6 +334,7 @@ export default {
       return valid;
     },
     copyToClipboard(value) {
+      if (!value) return;
       const domCreate = document.createElement('input');
       document.body.appendChild(domCreate);
       domCreate.setAttribute('value', value);
@@ -340,28 +371,9 @@ export default {
         loadingComponent.close();
       }
     },
-    async suscriptionManagment() {
-      if (!this.$route.query.type) {
-        // TO DO
-      }
-      const loadingComponent = this.$buefy.loading.open();
-      try {
-        // TO DO
-        loadingComponent.close();
-      } catch (error) {
-        this.$buefy.toast.open({
-          message: error.message,
-          type: 'is-danger',
-        });
-        loadingComponent.close();
-      }
-    }
   },
   async mounted() {
     await this.getDataUser();
-    if (this.$route.query.type) {
-      // TO DO
-    }
   }
 }
 </script>

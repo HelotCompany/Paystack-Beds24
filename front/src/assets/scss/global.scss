@@ -19,4 +19,7 @@ html, body, #app {
   &__inactive {
     background-color: $incative;
   }
+  &__active {
+    background-color: $success;
+  }
 }

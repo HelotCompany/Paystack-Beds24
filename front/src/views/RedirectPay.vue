@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { db } from '@/pluging/firebase';
+import { postFormHTML } from '@/services/general';
 
 export default {
   data() {
@@ -21,26 +21,19 @@ export default {
   computed: {},
   methods: {
     async redirect() {
-      if (!(this.$route.query.reference && this.$route.query.trxref && this.$route.params.bookId)) return;
+      if (!(this.$route.query.reference && this.$route.params.id && this.$route.params.bookId)) return;
       try {
-        await db.collection('transaction_paystack').doc(this.$route.query.reference).update({
-          trxref: this.$route.query.trxref,
-        });
-        const formData = new FormData();
-        formData.append('bookid', this.$route.params.bookId);
-        formData.append('key', this.$route.query.reference);
-        formData.append('status', 1);
-        formData.append('txnid', this.$route.query.trxref);
-        await axios({
-          method: 'post',
-          url: 'https://api.beds24.com/custompaymentgateway/notify.php',
-          data: formData,
-          headers: { "Content-Type": "multipart/form-data" },
+        const doc = await db.collection("users").doc(this.$route.params.id).get();
+        if (!doc.exists) return;
+        const info = doc.data();
+        postFormHTML('https://api.beds24.com/custompaymentgateway/notify.php', {
+          key: info.bed24Key,
+          bookid: this.$route.params.bookId,
         })
         this.$buefy.toast.open({
           message: 'Beds24 is notify',
           type: 'is-success',
-        });
+        }); 
       } catch (error) {
         this.$buefy.toast.open({
           message: `Error when notifying Bead24: ${error.message}`,
