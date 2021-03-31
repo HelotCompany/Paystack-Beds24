@@ -21,7 +21,7 @@ export default {
   computed: {},
   methods: {
     async redirect() {
-      if (!(this.$route.query.reference && this.$route.params.id && this.$route.params.bookId)) return;
+      if (!(this.$route.query.reference && this.$route.query.txnid && this.$route.params.id && this.$route.params.bookId)) return;
       try {
         const doc = await db.collection("users").doc(this.$route.params.id).get();
         if (!doc.exists) return;
@@ -29,6 +29,8 @@ export default {
         postFormHTML('https://api.beds24.com/custompaymentgateway/notify.php', {
           key: info.bed24Key,
           bookid: this.$route.params.bookId,
+          txnid: this.$route.query.txnid,
+          status: 1
         })
         this.$buefy.toast.open({
           message: 'Beds24 is notify',
