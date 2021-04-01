@@ -21,7 +21,7 @@ export default {
   computed: {},
   methods: {
     async redirect() {
-      if (!(this.$route.query.reference && this.$route.query.txnid && this.$route.params.id && this.$route.params.bookId)) return;
+      if (!(this.$route.query.reference && this.$route.query.trxref && this.$route.params.id && this.$route.params.bookId)) return;
       try {
         const doc = await db.collection("users").doc(this.$route.params.id).get();
         if (!doc.exists) return;
