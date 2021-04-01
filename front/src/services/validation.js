@@ -3,4 +3,32 @@ export function emailValidation(email) {
   return REGEX_EMAIL.test(email);
 }
 
-export const NOTHING = '';
+export function validation(infoData, infoError, time) {
+  let valid = true;
+  if (!emailValidation(infoData.email)) {
+    valid = false;
+    infoError.email = 'Email address is not valid';
+    setTimeout(() => infoError.email = '', time);
+  }
+  if (!infoData.firstName) {
+    valid = false;
+    infoError.firstName = 'First name is not valid';
+    setTimeout(() => infoError.firstName = '', time);
+  }
+  if (!infoData.lastName) {
+    valid = false;
+    infoError.lastName = 'Last name is not valid';
+    setTimeout(() => infoError.lastName = '', time);
+  }
+  if (!infoData.phone) {
+    valid = false;
+    infoError.phone = 'Phone is not valid';
+    setTimeout(() => infoError.phone = '', time);
+  }
+  if (!infoData.paystackKey) {
+    valid = false;
+    infoError.paystackKey = 'Paystack Public Key';
+    setTimeout(() => infoError.paystackKey = '', time);
+  }
+  return valid;
+}

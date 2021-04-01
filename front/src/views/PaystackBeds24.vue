@@ -14,12 +14,12 @@
       </div>
       <div class="level-right">
         <b-button 
-            type="is-primary"
-            expanded
-            label="Logout"
-            icon-right="logout"
-            class="has-text-weight-bold"
-            @click="logout()"/>
+          type="is-primary"
+          expanded
+          label="Logout"
+          icon-right="logout"
+          class="has-text-weight-bold"
+          @click="logout()"/>
       </div>
     </div>
     <form class="mb-6">
@@ -112,12 +112,12 @@
     </form>
     <div class="columns is-centered">
       <div class="column is-narrow">
-        <div class="level is-mobile" style="height: 100%">
+        <div class="level is-mobile" style="height: 100%" v-if="user && user.subscriptionId">
           <div class="level-left mr-3">
-            <div class="cercle" :class="[ paysuccess ? 'cercle__active' : 'cercle__inactive' ]"></div>
+            <div class="cercle" :class="[ subscriptionValid ? 'cercle__active' : 'cercle__inactive' ]"></div>
           </div>
           <div class="level-right mr-6">
-            <span class="has-text-weight-bold"> {{ paysuccess ? 'Active' : 'Inactive' }} </span>
+            <span class="has-text-weight-bold"> {{ subscriptionLabel }} </span>
           </div>
         </div>
       </div>
@@ -125,9 +125,9 @@
         <b-button
           type="is-primary"
           expanded
-          label="Subscribe"
+          label="Go to partal"
           class="has-text-weight-bold"
-          @click="subscribe()"/>
+          @click="goToPortal"/>
       </div>
     </div>
     <div>
@@ -169,10 +169,12 @@
 
 <script>
 import { mapMutations, mapGetters } from 'vuex';
+import { checkoutSubscription, createCustomerPortalSession } from '@/api';
 import { actionSubscribe } from '@/services/stripe';
-import { emailValidation } from '@/services/validation';
+import { validation } from '@/services/validation';
 import { db, auth } from '@/pluging/firebase';
 import getCurrentUser from '@/services/firebase';
+import ModalRegister from '@/components/modal/ModalRegister';
 
 export default {
   data() {
@@ -197,9 +199,12 @@ export default {
       payementUrl: '',
       isEditData: false,
       edit: false,
-      paysuccess: false,
+      subscriptionValid: false,
+      subscriptionLabel: 'Inactive',
+      eventUser: null,
     }
   },
+  watch: {},
   computed: {
     ...mapGetters(['userEmail']),
     isCurrentUser() {
@@ -239,17 +244,30 @@ export default {
         });
       }
     },
-    async save() {
-      if (!this.validation()) return;
+    async goToPortal() {
       const loadingComponent = this.$buefy.loading.open();
       try {
-        await db.collection("users").doc(this.user.uid).set(this.infoData);
-        const doc = await db.collection("users").doc(this.user.uid).get();
+        const data = (await createCustomerPortalSession(this.user.uid)).data;
+        window.location = data
+        loadingComponent.close();
+      } catch (error) {
+        loadingComponent.close();
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
+      }
+    },
+    async save() {
+      if (!validation(this.infoData, this.infoError, this.time)) return;
+      const loadingComponent = this.$buefy.loading.open();
+      try {
+        await db.collection('users').doc(this.user.uid).update({...this.infoData});
+        const doc = await db.collection('users').doc(this.user.uid).get();
         this.user = {
           ...this.user,
           ...doc.data(),
         }
-        console.log(this.user);
         this.$buefy.toast.open({
           message: 'Information saved successfully',
           type: 'is-success',
@@ -270,26 +288,53 @@ export default {
       try {
         this.user = await getCurrentUser();
         this.infoData.email = this.user.email;
-        const doc = await db.collection("users").doc(this.user.uid).get();
-        if (doc.exists) {
-          const info = doc.data();
-          this.user = {
-            ...this.user,
-            ...info,
+        this.eventUser = await db.collection('users').doc(this.user.uid).onSnapshot(async (doc) => {
+          if (doc.exists) {
+            const info = doc.data();
+            this.user = {
+              ...this.user,
+              ...info,
+            }
+            this.infoData = {
+              firstName: info.firstName,
+              lastName: info.lastName,
+              email: info.email,
+              phone: info.phone,
+              paystackKey: info.paystackKey,
+            };
+            if (this.user.subscriptionId) {
+              const subscription = (await checkoutSubscription(this.user.subscriptionId)).data;
+              if (['active', 'trialing'].includes(subscription.status)) {
+                this.subscriptionValid = true;
+                if (subscription.status === 'active') this.subscriptionLabel = 'Active';
+                if (subscription.status === 'trialing') this.subscriptionLabel = 'Trialing';
+              }
+            }
+            this.bed24Key = info.bed24Key ? info.bed24Key : '';
+            this.payementUrl = info.payementUrl ? info.payementUrl : '';
+            this.isEditData = true;
+          } else {
+            this.$buefy.modal.open({
+              parent: this,
+              component: ModalRegister,
+              hasModalCard: true,
+              customClass: '',
+              trapFocus: true,
+              canCancel: [],
+              with: 960,
+              props: {
+                email: this.user.email,
+                userId: this.user.uid,
+              },
+              events: {
+                close: async () => {
+                  await this.getDataUser();
+                }
+              }
+            })
           }
-          this.infoData = {
-            firstName: info.firstName,
-            lastName: info.lastName,
-            email: info.email,
-            phone: info.phone,
-            paystackKey: info.paystackKey,
-          };
-          this.paysuccess = !!info.paysuccess;
-          this.bed24Key = info.bed24Key ? info.bed24Key : '';
-          this.payementUrl = info.payementUrl ? info.payementUrl : '';
-          this.isEditData = true;
-        }
-        loadingComponent.close();
+          loadingComponent.close();
+        });
       } catch (error) {
         loadingComponent.close();
         if (error === null) {
@@ -302,36 +347,6 @@ export default {
           type: 'is-danger',
         });
       }
-    },
-    validation() {
-      let valid = true;
-      const that = this;
-      if (!emailValidation(this.infoData.email)) {
-        valid = false;
-        this.infoError.email = 'Email address is not valid';
-        setTimeout(() => that.infoError.email = '', this.time);
-      }
-      if (!this.infoData.firstName) {
-        valid = false;
-        this.infoError.firstName = 'First name is not valid';
-        setTimeout(() => that.infoError.firstName = '', this.time);
-      }
-      if (!this.infoData.lastName) {
-        valid = false;
-        this.infoError.lastName = 'Last name is not valid';
-        setTimeout(() => that.infoError.lastName = '', this.time);
-      }
-      if (!this.infoData.phone) {
-        valid = false;
-        this.infoError.phone = 'Phone is not valid';
-        setTimeout(() => that.infoError.phone = '', this.time);
-      }
-      if (!this.infoData.paystackKey) {
-        valid = false;
-        this.infoError.paystackKey = 'Paystack Public Key';
-        setTimeout(() => that.infoError.paystackKey = '', this.time);
-      }
-      return valid;
     },
     copyToClipboard(value) {
       if (!value) return;
@@ -374,6 +389,9 @@ export default {
   },
   async mounted() {
     await this.getDataUser();
+  },
+  destroyed() {
+    if (this.eventUser !== null) this.eventUser();
   }
 }
 </script>

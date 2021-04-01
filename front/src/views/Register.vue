@@ -39,6 +39,7 @@
 import { mapMutations, mapGetters } from 'vuex';
 import { emailValidation } from '@/services/validation';
 import { auth } from '@/pluging/firebase';
+import getCurrentUser from '@/services/firebase';
 
 export default {
   data() {
@@ -112,6 +113,13 @@ export default {
   async mounted() {
     if (this.$route.query.apiKey) {
       await this.validSign();
+    } else {
+      try {
+        await getCurrentUser();
+        this.$router.replace({ name: 'PaystackBeds24' });
+      } catch (e) {
+        //
+      }
     }
   }
 }

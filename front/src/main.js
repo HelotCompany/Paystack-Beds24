@@ -7,7 +7,7 @@ import store from './store'
 
 Vue.use(Buefy)
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 new Vue({
   router,

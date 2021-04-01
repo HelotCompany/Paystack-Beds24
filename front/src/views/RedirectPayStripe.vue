@@ -20,31 +20,24 @@ export default {
   computed: {},
   methods: {
     async redirect() {
-      const loadingComponent = this.$buefy.loading.open();
       try {
-        console.log('this.$route', this.$route);
-        if (this.$route.params.id) {
-          const doc = await db.collection("users").doc(this.$route.params.id).get();
-          if (!doc.exists) this.$router.replace({ name: 'PaystackBeds24' });
-          if (!(this.$route.query.session_id)) this.$router.replace({ name: 'PaystackBeds24' });
-          await checkoutSession(this.$route.query.session_id);
-          let bed24Key = '';
-          let payementUrl = '';
-          if (this.$route.query.paysuccess) {
-            bed24Key = this.generateHexString(60);
-            payementUrl = `${config.BASE_URL}p/${this.$route.params.id}`;
-          }
-          await db.collection("users").doc(this.$route.params.id).update({
-            paysuccess: !!this.$route.query.paysuccess,
-            session_id: this.$route.query.session_id,
-            bed24Key,
-            payementUrl,
-          });
+        if (!(this.$route.query.session_id)) this.$router.replace({ name: 'PaystackBeds24' });
+        const session = (await checkoutSession(this.$route.query.session_id)).data;
+        const doc = await db.collection('users').doc(session.metadata.userId).get();
+        if (!doc.exists) this.$router.replace({ name: 'PaystackBeds24' });
+        let bed24Key = '';
+        let payementUrl = '';
+        if (this.$route.query.paysuccess) {
+          bed24Key = this.generateHexString(60);
+          payementUrl = `${config.BASE_URL}p/${session.metadata.userId}`;
         }
-        loadingComponent.close();
+        await db.collection('users').doc(session.metadata.userId).update({
+          subscriptionId: session.subscription,
+          bed24Key,
+          payementUrl,
+        });
         this.$router.replace({ name: 'PaystackBeds24' })
       } catch (error) {
-        loadingComponent.close();
         this.$buefy.toast.open({
           message: `${error.message}`,
           type: 'is-danger',

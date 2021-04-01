@@ -15,7 +15,7 @@ const routes = [
     component: () => import('../views/RedirectPay.vue')
   },
   {
-    path: '/RedirectPayStripe/:id',
+    path: '/RedirectPayStripe',
     name: 'RedirectPayStripe',
     component: () => import('../views/RedirectPayStripe.vue')
   },
