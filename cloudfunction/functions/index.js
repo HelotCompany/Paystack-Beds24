@@ -85,6 +85,7 @@ app.post('/p/:id', async (req, res) => {
       amount: parseInt(amount, 10) * 100,
       callback_url: `${config.global.url_redirect}/${id}/${bookid}`,
       reference: resultDoc.id,
+      invoice_limit: 1
     })
     return res.redirect(resultTransaction.data.authorization_url);
   } catch (error) {

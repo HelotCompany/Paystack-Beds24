@@ -20,6 +20,11 @@ export async function checkoutSession(id) {
   return response;
 }
 
+export async function checkoutPaystackBooking(data) {
+  const response = await HTTP.post('check-paystack-booking', data);
+  return response;
+}
+
 export async function checkoutSubscription(id) {
   const response = await HTTP.get(`checkout-subscription/${id}`);
   return response;

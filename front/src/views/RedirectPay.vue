@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import { db } from '@/pluging/firebase';
 import { postFormHTML } from '@/services/general';
+import { checkoutPaystackBooking } from '@/api';
 
 export default {
   data() {
@@ -21,15 +21,22 @@ export default {
   computed: {},
   methods: {
     async redirect() {
-      if (!(this.$route.query.reference && this.$route.query.trxref && this.$route.params.id && this.$route.params.bookId)) return;
+      if (!(this.$route.query.reference && this.$route.query.trxref && this.$route.params.id && this.$route.params.bookId)) {
+        this.$router.go(-2);
+        return;
+      }
       try {
-        const doc = await db.collection("users").doc(this.$route.params.id).get();
-        if (!doc.exists) return;
-        const info = doc.data();
-        postFormHTML('https://api.beds24.com/custompaymentgateway/notify.php', {
-          key: info.bed24Key,
+        const result = (await checkoutPaystackBooking({
+          hotelId: this.$route.params.id,
           bookid: this.$route.params.bookId,
-          txnid: this.$route.query.txnid,
+          txnid: this.$route.query.trxref,
+          status: 1
+        })).data;
+        console.log('🚀 ~ file: RedirectPay.vue ~ line 27 ~ redirect ~ result', result)
+        postFormHTML('https://api.beds24.com/custompaymentgateway/notify.php', {
+          key: result.bed24Key,
+          bookid: this.$route.params.bookId,
+          txnid: this.$route.query.trxref,
           status: 1
         })
         this.$buefy.toast.open({
@@ -37,6 +44,8 @@ export default {
           type: 'is-success',
         }); 
       } catch (error) {
+        console.log('🚀error', error)
+        console.log('🚀error.message', error.message)
         this.$buefy.toast.open({
           message: `Error when notifying Bead24: ${error.message}`,
           type: 'is-danger',

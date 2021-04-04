@@ -307,7 +307,7 @@ export default {
               if (['active', 'trialing'].includes(subscription.status)) {
                 this.subscriptionValid = true;
                 if (subscription.status === 'active') this.subscriptionLabel = 'Active';
-                if (subscription.status === 'trialing') this.subscriptionLabel = 'Trialing';
+                if (subscription.status === 'trialing') this.subscriptionLabel = 'Trial';
               }
             }
             this.bed24Key = info.bed24Key ? info.bed24Key : '';
