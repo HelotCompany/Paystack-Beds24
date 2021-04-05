@@ -25,6 +25,17 @@ const routes = [
     component: () => import('../views/PaystackBeds24.vue')
   },
   {
+    path: '/Dashboard',
+    component: () => import('../views/Dashboard/Index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: () => import('../views/Dashboard/Home.vue'),
+      }
+    ]
+  },
+  {
     path: '/RedirectPay/:id/:bookId',
     name: 'RedirectPay',
     component: () => import('../views/RedirectPay.vue')

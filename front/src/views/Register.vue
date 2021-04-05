@@ -69,7 +69,6 @@ export default {
   methods: {
     ...mapMutations({
       setEmail: 'SET_EMAIL',
-      setDataSign: 'SET_DATA_SIGN'
     }),
     async proceed() {
       if (!emailValidation(this.email)) {
@@ -109,9 +108,6 @@ export default {
         const loadingComponent = this.$buefy.loading.open();
         try {
           await auth.signInWithEmailLink(email, window.location.href);
-          this.setDataSign({
-            isConnect: true,
-          })
           this.$router.push({ name: 'PaystackBeds24' });
           loadingComponent.close();
         } catch (error) {

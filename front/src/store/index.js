@@ -7,24 +7,27 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     email: '',
-    dataSign: null,
+    user: null,
   },
   mutations: {
     SET_EMAIL: (state, val) => {
       state.email = val;
     },
-    SET_DATA_SIGN: (state, val) => {
-      state.dataSign = val;
+    SET_USER: (state, val) => {
+      state.user = val;
     }
   },
   actions: {
   },
   getters: {
     userEmail: (state) => state.email,
-    isConnect: (state) => state.dataSign && state.dataSign.isConnect,
+    user: (state) => state.user,
+    subscriptionValid: (state) => state.user ? state.user.subscriptionValid : false,
+    subscriptionLabel: (state) => state.user ? state.user.subscriptionLabel : 'Inactive',
+    userId: (state) => state.user ? state.user.uid : '',
   },
   plugins: [createPersistedState({
-    paths: ['email', 'dataSign'],
+    paths: ['email', 'user'],
     key: 'PaystackBeds24',
   })],
 })

@@ -5,4 +5,6 @@ $color-disabled: #F1D6D6;
 
 $addColors: (
   "primary": ($primary, $white),
+  "primary-light": ($color-background, $primary),
+  "incative": ($incative, $white),
 );
