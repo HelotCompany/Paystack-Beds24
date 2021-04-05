@@ -15,6 +15,10 @@ export default new Vuex.Store({
     },
     SET_USER: (state, val) => {
       state.user = val;
+    },
+    RESET: (state) => {
+      state.user = null;
+      state.email = '';
     }
   },
   actions: {

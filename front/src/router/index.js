@@ -43,6 +43,11 @@ const routes = [
         name: 'Settings',
         component: () => import('../views/Dashboard/Settings.vue'),
       },
+      {
+        path: 'Help',
+        name: 'Help',
+        component: () => import('../views/Dashboard/Help.vue'),
+      },
     ]
   },
   {

@@ -108,7 +108,7 @@ export default {
         const loadingComponent = this.$buefy.loading.open();
         try {
           await auth.signInWithEmailLink(email, window.location.href);
-          this.$router.push({ name: 'PaystackBeds24' });
+          this.$router.push({ name: 'Dashboard' });
           loadingComponent.close();
         } catch (error) {
           this.$buefy.toast.open({
@@ -126,7 +126,7 @@ export default {
     } else {
       try {
         await getCurrentUser();
-        this.$router.replace({ name: 'PaystackBeds24' });
+        this.$router.replace({ name: 'Dashboard' });
       } catch (e) {
         //
       }

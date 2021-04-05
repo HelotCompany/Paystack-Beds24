@@ -8,12 +8,25 @@
         expanded
         size="is-medium"
         class="has-text-weight-bold has-text-primary is-justify-content-start"
-        @click="goTo(item.to)"/>
+        @click="goTo(item.to)"
+        v-if="item.label !== 'Logout'"/>
+      <b-button
+        type="is-transparent"
+        :icon-left="item.icon"
+        :label="item.label"
+        expanded
+        size="is-medium"
+        class="has-text-weight-bold has-text-primary is-justify-content-start"
+        @click="logout()"
+        v-else/>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+import { auth } from '@/pluging/firebase';
+
 export default {
   data() {
     return {
@@ -36,20 +49,38 @@ export default {
         {
           label: 'Logout',
           icon: 'logout',
-          to: { name: 'Dashboard' }
+          to: { name: '' },
         },
         {
           label: 'Help',
           icon: 'help-circle',
-          to: { name: 'Dashboard' }
+          to: { name: 'Help' }
         },
       ],
     }
   },
   methods: {
+    ...mapMutations({
+      resetStore: 'RESET',
+    }),
     async goTo(to) {
       if (this.$route.name !== to.name) {
         this.$router.replace(to);
+      }
+    },
+    async logout() {
+      const loadingComponent = this.$buefy.loading.open();
+      try {
+        await auth.signOut();
+        this.resetStore();
+        this.$router.push('/');
+        loadingComponent.close();
+      } catch (error) {
+        this.$buefy.toast.open({
+          message: error.message,
+          type: 'is-danger',
+        });
+        loadingComponent.close();
       }
     },
   }
