@@ -44,10 +44,10 @@
             :message="infoError.phone">
             <b-select v-model="infoData.callingCode">
               <option
-                  v-for="code in callingCodes"
-                  :value="code"
-                  :key="code">
-                  +{{ code }}
+                v-for="code in callingCodes"
+                :value="code"
+                :key="code">
+                +{{ code }}
               </option>
             </b-select>
             <b-input 

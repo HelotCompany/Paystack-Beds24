@@ -29,9 +29,9 @@ export default {
           to: { name: 'Profile' }
         },
         {
-          label: 'Setting',
+          label: 'Settings',
           icon: 'settings',
-          to: { name: 'Dashboard' }
+          to: { name: 'Settings' }
         },
         {
           label: 'Logout',
