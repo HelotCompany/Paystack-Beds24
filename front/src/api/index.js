@@ -34,3 +34,10 @@ export async function createCustomerPortalSession(id) {
   const response = await HTTP.post(`create-customer-portal-session/${id}`);
   return response;
 }
+
+const BASE_URL_CONTRIE = 'https://restcountries.eu/rest/v2/';
+
+export async function getAllContries() {
+  const response = await HTTP.get(`${BASE_URL_CONTRIE}all?fields=name;currencies;callingCodes;alpha3Code`)
+  return response;
+}

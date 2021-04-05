@@ -10,6 +10,21 @@ const routes = [
     component: () => import('../views/Register.vue')
   },
   {
+    path: '/VerifyEmail',
+    name: 'VerifyEmail',
+    component: () => import('../views/VerifyEmail.vue')
+  },
+  {
+    path: '/CreateAccount',
+    name: 'CreateAccount',
+    component: () => import('../views/CreateAccount.vue')
+  },
+  {
+    path: '/PaystackBeds24',
+    name: 'PaystackBeds24',
+    component: () => import('../views/PaystackBeds24.vue')
+  },
+  {
     path: '/RedirectPay/:id/:bookId',
     name: 'RedirectPay',
     component: () => import('../views/RedirectPay.vue')
@@ -18,11 +33,6 @@ const routes = [
     path: '/RedirectPayStripe',
     name: 'RedirectPayStripe',
     component: () => import('../views/RedirectPayStripe.vue')
-  },
-  {
-    path: '/PaystackBeds24',
-    name: 'PaystackBeds24',
-    component: () => import('../views/PaystackBeds24.vue')
   },
 ]
 

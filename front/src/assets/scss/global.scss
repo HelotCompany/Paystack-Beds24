@@ -1,17 +1,31 @@
-html, body, #app {
+html, body {
   height: 100%;
-  width: 100%;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-.custum-input {
-  background-color: $primary;
-  &:disabled {
-    background-color: $primary;
+  background-color: $color-background;
+  font-family: 'Puritan', sans-serif;
+  ::-webkit-scrollbar{
+    display: none;
+  }
+  ::-webkit-webkit-scrollbar{
+    display: none;
+  }
+  ::-moz-webkit-scrollbar{
+    display: none;
   }
 }
+
+.custum-input {
+  &:disabled {
+    background-color: $color-disabled;
+  }
+}
+
+.style-general {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: $color-background;
+}
+
 .cercle {
   width: 29px;
   height: 29px;

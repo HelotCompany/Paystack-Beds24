@@ -20,10 +20,21 @@ export function validation(infoData, infoError, time) {
     infoError.lastName = 'Last name is not valid';
     setTimeout(() => infoError.lastName = '', time);
   }
+  infoError.phone = [];
+  if (!infoData.callingCode) {
+    valid = false;
+    infoError.phone.push('Calling Code is not valid');
+    setTimeout(() => infoError.phone = '', time);
+  }
   if (!infoData.phone) {
     valid = false;
-    infoError.phone = 'Phone is not valid';
+    infoError.phone.push('Phone is not valid');
     setTimeout(() => infoError.phone = '', time);
+  }
+  if (!infoData.country) {
+    valid = false;
+    infoError.country = 'Country is not valid';
+    setTimeout(() => infoError.country = '', time);
   }
   if (!infoData.paystackKey) {
     valid = false;

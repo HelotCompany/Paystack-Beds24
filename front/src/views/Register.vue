@@ -1,7 +1,13 @@
 <template>
-  <div class="container is-max-desktop px-4" style="height: 100%">
-    <div class="columns is-vcentered is-mobile" style="height: 100%">
-      <div class="column">
+  <div class="columns is-marginless" style="height: 100%">
+    <div class="column has-background-primary columns is-flex-direction-column is-centered is-marginless is-hidden-mobile">
+      <img src="@/assets/images/illustration-signin.svg" alt="">
+    </div>
+    <div class="column columns is-marginless is-flex-direction-column is-justify-content-space-between" style="height: 100%">
+      <div class="column is-narrow">
+        <h1 class="has-text-centered is-size-2 has-text-weight-medium">Paystack + Beds24</h1>
+      </div>
+      <div class="column is-narrow px-6">
         <h1 class="has-text-centered title mb-6">Get started</h1>
         <b-field 
           label="Email Address"
@@ -20,7 +26,7 @@
           </b-checkbox>
         </div>
         <div class="columns is-centered">
-          <div class="column is-4">
+          <div class="column">
             <b-button 
               type="is-primary"
               expanded
@@ -31,6 +37,9 @@
           </div>
         </div>
       </div>
+      <div class="column is-narrow">
+        <Copywrinting/>
+      </div>
     </div>
   </div>
 </template>
@@ -40,8 +49,12 @@ import { mapMutations, mapGetters } from 'vuex';
 import { emailValidation } from '@/services/validation';
 import { auth } from '@/pluging/firebase';
 import getCurrentUser from '@/services/firebase';
+import Copywrinting from '@/components/general/Copywrinting.vue';
 
 export default {
+  components: {
+    Copywrinting,
+  },
   data() {
     return {
       email: '',
@@ -77,6 +90,7 @@ export default {
           message: 'Check your mailbox to complete the process',
           type: 'is-success',
         });
+        this.$router.push({ name: 'VerifyEmail' });
         loadingComponent.close();
       } catch (error) {
         this.$buefy.toast.open({
