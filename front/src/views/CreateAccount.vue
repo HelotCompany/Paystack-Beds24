@@ -56,15 +56,16 @@
               :message="infoError.phone">
               <b-select v-model="infoData.callingCode">
                 <option
-                    v-for="code in callingCodes"
-                    :value="code"
-                    :key="code">
-                    +{{ code }}
+                  v-for="code in callingCodes"
+                  :value="code"
+                  :key="code">
+                  +{{ code }}
                 </option>
               </b-select>
               <b-input 
                 custom-class="custum-input"
-                v-model="infoData.phone">
+                v-model="infoData.phone"
+                expanded>
               </b-input>
             </b-field>
           </div>
@@ -179,7 +180,7 @@ export default {
       try {
         const response = (await initSubscription({
           ...this.infoData,
-          userId: this.userId,
+          userId: this.user.uid,
         })).data;
         const stripe = window.Stripe(response.publishableKey);
         await stripe.redirectToCheckout({
@@ -189,7 +190,6 @@ export default {
           message: 'Information saved successfully',
           type: 'is-success',
         });
-        this.$emit('close');
         loadingComponent.close();
       } catch (error) {
         loadingComponent.close();

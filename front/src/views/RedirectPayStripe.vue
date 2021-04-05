@@ -21,10 +21,10 @@ export default {
   methods: {
     async redirect() {
       try {
-        if (!(this.$route.query.session_id)) this.$router.replace({ name: 'PaystackBeds24' });
+        if (!(this.$route.query.session_id)) this.$router.replace({ name: 'Dashboard' });
         const session = (await checkoutSession(this.$route.query.session_id)).data;
         const doc = await db.collection('users').doc(session.metadata.userId).get();
-        if (!doc.exists) this.$router.replace({ name: 'PaystackBeds24' });
+        if (!doc.exists) this.$router.replace({ name: 'Dashboard' });
         let bed24Key = '';
         let payementUrl = '';
         if (this.$route.query.paysuccess) {
@@ -36,7 +36,7 @@ export default {
           bed24Key,
           payementUrl,
         });
-        this.$router.replace({ name: 'PaystackBeds24' })
+        this.$router.replace({ name: 'Dashboard' })
       } catch (error) {
         this.$buefy.toast.open({
           message: `${error.message}`,

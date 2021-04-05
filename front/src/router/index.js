@@ -22,7 +22,8 @@ const routes = [
   {
     path: '/PaystackBeds24',
     name: 'PaystackBeds24',
-    component: () => import('../views/PaystackBeds24.vue')
+    component: () => import('../views/PaystackBeds24.vue'),
+    redirect: '/Dashboard'
   },
   {
     path: '/Dashboard',

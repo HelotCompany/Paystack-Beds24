@@ -177,6 +177,8 @@ app.post('/init-subscription', async (req, res) => {
       firstName,
       lastName,
       paystackKey,
+      callingCode,
+      country
     } = req.body;
     const customer = await stripe.customers.create({
       email,
@@ -212,6 +214,8 @@ app.post('/init-subscription', async (req, res) => {
       paystackKey,
       dateCeate: new Date(),
       customerId: customer.id,
+      callingCode,
+      country
     });
     res.send({ sessionId: session.id, publishableKey: config.stripe.pk });
   } catch (error) {
