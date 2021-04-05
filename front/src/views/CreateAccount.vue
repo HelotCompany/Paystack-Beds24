@@ -54,7 +54,7 @@
               label="Phone"
               :type="infoError.phone ? 'is-danger' : ''"
               :message="infoError.phone">
-              <b-select v-model="infoError.callingCode">
+              <b-select v-model="infoData.callingCode">
                 <option
                     v-for="code in callingCodes"
                     :value="code"

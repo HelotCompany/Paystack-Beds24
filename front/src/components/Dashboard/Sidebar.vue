@@ -2,12 +2,12 @@
   <div class="pt-6">
     <div class="my-3" v-for="(item, i) in menu" :key="i">
       <b-button
-        :type="$route.name === item.to.name ? 'is-primary-light' : ''"
+        :type="$route.name === item.to.name ? 'is-primary-light' : 'is-transparent'"
         :icon-left="item.icon"
         :label="item.label"
         expanded
         size="is-medium"
-        class="has-text-weight-bold is-justify-content-start"
+        class="has-text-weight-bold has-text-primary is-justify-content-start"
         @click="goTo(item.to)"/>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
         {
           label: 'Profile',
           icon: 'account',
-          to: { name: 'Dashboard' }
+          to: { name: 'Profile' }
         },
         {
           label: 'Setting',

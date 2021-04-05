@@ -2,9 +2,11 @@ $primary: #690707;
 $incative: #982A2A;
 $color-background: #F9F2F2;
 $color-disabled: #F1D6D6;
+$transparent: transparent;
 
 $addColors: (
   "primary": ($primary, $white),
   "primary-light": ($color-background, $primary),
   "incative": ($incative, $white),
+  "transparent": ($transparent, $white),
 );
