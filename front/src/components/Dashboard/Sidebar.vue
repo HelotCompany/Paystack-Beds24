@@ -1,5 +1,8 @@
 <template>
   <div class="pt-6">
+    <div>
+      <img src="@/assets/logo.svg" alt="">
+    </div>
     <div class="my-3" v-for="(item, i) in menu" :key="i">
       <b-button
         :type="$route.name === item.to.name ? 'is-primary-light' : 'is-transparent'"
