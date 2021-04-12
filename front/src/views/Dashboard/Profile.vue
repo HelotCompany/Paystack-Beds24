@@ -10,7 +10,8 @@
             :message="infoError.firstName">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.firstName">
+              v-model="infoData.firstName"
+              :disabled="!edit">
             </b-input>
           </b-field>
         </div>
@@ -21,7 +22,8 @@
             :message="infoError.lastName">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.lastName">
+              v-model="infoData.lastName"
+              :disabled="!edit">
             </b-input>
           </b-field>
         </div>
@@ -42,7 +44,7 @@
             label="Phone"
             :type="infoError.phone ? 'is-danger' : ''"
             :message="infoError.phone">
-            <b-select v-model="infoData.callingCode">
+            <b-select v-model="infoData.callingCode" :disabled="!edit">
               <option
                 v-for="code in callingCodes"
                 :value="code"
@@ -53,6 +55,7 @@
             <b-input 
               custom-class="custum-input"
               v-model="infoData.phone"
+              :disabled="!edit"
               expanded>
             </b-input>
           </b-field>
@@ -64,16 +67,24 @@
             :message="infoError.paystackKey">
             <b-input 
               custom-class="custum-input"
-              v-model="infoData.paystackKey">
+              v-model="infoData.paystackKey"
+              :disabled="!edit">
             </b-input>
           </b-field>
         </div>
         <div class="column is-narrow">
           <b-button
             type="is-primary"
+            label="Edit"
+            class="has-text-weight-bold px-6"
+            @click="edit = true"
+            v-if="!edit"/>
+          <b-button
+            type="is-primary"
             label="Save"
             class="has-text-weight-bold px-6"
-            @click="save()"/>
+            @click="save()"
+            v-else/>
         </div>
       </form>
     </div>
@@ -115,7 +126,8 @@ export default {
         'callingCode',
         'phone',
         'paystackKey'
-      ]
+      ],
+      edit: false
     }
   },
   watch: {
