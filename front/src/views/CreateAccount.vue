@@ -188,7 +188,7 @@ export default {
         });
         this.$buefy.toast.open({
           message: 'Information saved successfully',
-          type: 'is-success',
+          type: 'is-primary',
         });
         loadingComponent.close();
       } catch (error) {

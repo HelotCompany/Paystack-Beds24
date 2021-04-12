@@ -41,7 +41,7 @@ export default {
         })
         this.$buefy.toast.open({
           message: 'Beds24 is notify',
-          type: 'is-success',
+          type: 'is-primary',
         }); 
       } catch (error) {
         console.log('🚀error', error)

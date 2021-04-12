@@ -99,7 +99,7 @@ export default {
         this.setEmail(this.email);
         this.$buefy.toast.open({
           message: 'Check your mailbox to complete the process',
-          type: 'is-success',
+          type: 'is-primary',
         });
         this.$router.push({ name: 'VerifyEmail' });
         loadingComponent.close();

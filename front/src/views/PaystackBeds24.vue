@@ -270,7 +270,7 @@ export default {
         }
         this.$buefy.toast.open({
           message: 'Information saved successfully',
-          type: 'is-success',
+          type: 'is-primary',
         });
         this.edit = false;
         this.isEditData = true;
@@ -358,7 +358,7 @@ export default {
         const isCopied = document.execCommand('copy');
         if (isCopied) this.$buefy.toast.open({
           message: 'Copy to clipboard',
-          type: 'is-success',
+          type: 'is-primary',
         });
         else this.$buefy.toast.open({
           message: 'Error while copying',

@@ -119,7 +119,7 @@ export default {
         });
         this.$buefy.toast.open({
           message: 'Information saved successfully',
-          type: 'is-success',
+          type: 'is-primary',
         });
         this.$emit('close');
         loadingComponent.close();

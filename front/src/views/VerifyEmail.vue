@@ -67,7 +67,7 @@ export default {
         await auth.sendSignInLinkToEmail(this.userEmail, actionCodeSettings);
         this.$buefy.toast.open({
           message: 'Check your mailbox to complete the process',
-          type: 'is-success',
+          type: 'is-primary',
         });
         loadingComponent.close();
       } catch (error) {

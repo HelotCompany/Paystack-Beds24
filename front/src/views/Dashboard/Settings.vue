@@ -90,7 +90,7 @@ export default {
         const isCopied = document.execCommand('copy');
         if (isCopied) this.$buefy.toast.open({
           message: 'Copy to clipboard',
-          type: 'is-success',
+          type: 'is-primary',
         });
         else this.$buefy.toast.open({
           message: 'Error while copying',
