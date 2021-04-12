@@ -20,10 +20,13 @@
           </b-input>
         </b-field>
         <div class="has-text-centered mb-5">
-          <b-checkbox 
-            v-model="privacyPolicy">
-            I agree to Terms and privacy policy
-          </b-checkbox>
+          <b-field
+            :type="errorPrivacyPolicy ? 'is-danger' : ''"
+            :message="errorPrivacyPolicy">
+            <b-checkbox v-model="privacyPolicy">
+              I agree to Terms and privacy policy
+            </b-checkbox>
+          </b-field>
         </div>
         <div class="columns is-centered">
           <div class="column">
@@ -59,6 +62,7 @@ export default {
     return {
       email: '',
       errorEmail: '',
+      errorPrivacyPolicy: '',
       privacyPolicy: true,
       time: 4000,
     }
@@ -71,12 +75,20 @@ export default {
       setEmail: 'SET_EMAIL',
     }),
     async proceed() {
+      let valid = true;
       if (!emailValidation(this.email)) {
+        valid = false
         const that = this;
         this.errorEmail = 'Email address is not valid';
         setTimeout(() => that.errorEmail = '', this.time);
-        return;
       }
+      if (!this.privacyPolicy) {
+        valid = false
+        const that = this;
+        this.errorPrivacyPolicy = 'Validation required';
+        setTimeout(() => that.errorPrivacyPolicy = '', this.time);
+      }
+      if (!valid) return;
       const loadingComponent = this.$buefy.loading.open();
       try { 
         const actionCodeSettings = {
