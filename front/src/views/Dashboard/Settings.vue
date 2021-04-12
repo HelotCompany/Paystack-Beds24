@@ -43,7 +43,7 @@
         </div>
         <div class="column is-12">
           <b-field 
-            label="Payment Url">
+            label="Publication data">
             <b-input 
               custom-class="custum-input"
               v-model="code"
@@ -71,13 +71,16 @@ import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
-      code: 'currency=NGN&bookid=[BOOKID]&amount=[PAYMENTAMOUNT]&email=[GUESTEMAIL]&description=Deposit Payment for [PROPERTYNAME]'
     }
   },
   computed: {
     ...mapGetters({
       user: 'user',
     }),
+    code() {
+      const currencie = this.user ? this.user.country.currencies[0].code : ''
+      return `currency=${currencie}&bookid=[BOOKID]&amount=[PAYMENTAMOUNT]&email=[GUESTEMAIL]&description=Deposit Payment for [PROPERTYNAME]`
+    }
   },
   methods: {
     copyToClipboard(value) {

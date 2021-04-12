@@ -9,16 +9,18 @@
       </div>
       <div class="column is-narrow px-6">
         <h1 class="has-text-centered title mb-6">Get started</h1>
-        <b-field 
-          label="Email Address"
-          custom-class="has-text-centered"
-          :type="errorEmail ? 'is-danger' : ''"
-          :message="errorEmail">
-          <b-input 
-            custom-class="custum-input"
-            v-model="email">
-          </b-input>
-        </b-field>
+        <form @submit.prevent="proceed">
+           <b-field 
+            label="Email Address"
+            custom-class="has-text-centered"
+            :type="errorEmail ? 'is-danger' : ''"
+            :message="errorEmail">
+            <b-input 
+              custom-class="custum-input"
+              v-model="email">
+            </b-input>
+          </b-field>
+        </form>
         <div class="has-text-centered mb-5">
           <b-field
             :type="errorPrivacyPolicy ? 'is-danger' : ''"
