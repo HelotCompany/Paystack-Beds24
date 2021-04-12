@@ -43,7 +43,7 @@
         </div>
         <div class="column is-12">
           <b-field 
-            label="Publication data">
+            label="Post data">
             <b-input 
               custom-class="custum-input"
               v-model="code"
@@ -78,9 +78,9 @@ export default {
       user: 'user',
     }),
     code() {
-      const currencie = this.user ? this.user.country.currencies[0].code : ''
+      const currencie = this.user ? this.user.currencie || this.user.country.currencies[0].code : ''
       return `currency=${currencie}&bookid=[BOOKID]&amount=[PAYMENTAMOUNT]&email=[GUESTEMAIL]&description=Deposit Payment for [PROPERTYNAME]`
-    }
+    },
   },
   methods: {
     copyToClipboard(value) {

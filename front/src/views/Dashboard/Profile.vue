@@ -62,6 +62,18 @@
         </div>
         <div class="column is-12">
           <b-field 
+            label="Currencie"
+            :type="infoError.currencie ? 'is-danger' : ''"
+            :message="infoError.currencie">
+            <b-input 
+              custom-class="custum-input"
+              v-model="infoData.currencie"
+              :disabled="!edit">
+            </b-input>
+          </b-field>
+        </div>
+        <div class="column is-12">
+          <b-field 
             label="Paystack Secret Key"
             :type="infoError.paystackKey ? 'is-danger' : ''"
             :message="infoError.paystackKey">
@@ -79,12 +91,18 @@
             class="has-text-weight-bold px-6"
             @click="edit = true"
             v-if="!edit"/>
-          <b-button
-            type="is-primary"
-            label="Save"
-            class="has-text-weight-bold px-6"
-            @click="save()"
-            v-else/>
+          <div class="buttons" v-else>
+            <b-button
+              type=""
+              label="Cancel"
+              class="has-text-weight-bold px-6"
+              @click="cancel()"/>
+            <b-button
+              type="is-primary"
+              label="Save"
+              class="has-text-weight-bold px-6"
+              @click="save()"/>
+          </div>
         </div>
       </form>
     </div>
@@ -107,6 +125,7 @@ export default {
         phone: '',
         paystackKey: '',
         callingCode: '',
+        currencie: '',
       },
       infoError: {
         firstName: '',
@@ -114,6 +133,7 @@ export default {
         email: '',
         phone: '',
         paystackKey: '',
+        currencie: '',
       },
       time: 4000,
       contries: [],
@@ -125,7 +145,8 @@ export default {
         'lastName',
         'callingCode',
         'phone',
-        'paystackKey'
+        'paystackKey',
+        'currencie',
       ],
       edit: false
     }
@@ -139,6 +160,7 @@ export default {
         this.infoData.phone = val.phone;
         this.infoData.paystackKey = val.paystackKey;
         this.infoData.callingCode = val.callingCode;
+        this.infoData.currencie = val.currencie || val.country.currencies[0].code || '';
       },
       deep: true,
       immediate: true
@@ -186,6 +208,16 @@ export default {
         });
       }
     },
+    cancel() {
+      this.infoData.firstName = this.user.firstName;
+      this.infoData.lastName = this.user.lastName;
+      this.infoData.email = this.user.email;
+      this.infoData.phone = this.user.phone;
+      this.infoData.paystackKey = this.user.paystackKey;
+      this.infoData.callingCode = this.user.callingCode;
+      this.infoData.currencie = this.user.currencie || this.user.country.currencies[0].code || '';
+      this.edit = false;
+    }
   },
   async mounted() {
     try {

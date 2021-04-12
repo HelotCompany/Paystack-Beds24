@@ -54,5 +54,10 @@ export function validation(
     infoError.paystackKey = 'Paystack Public Key';
     setTimeout(() => infoError.paystackKey = '', time);
   }
+  if (fiels.includes('currencie') && !infoData.currencie) {
+    valid = false;
+    infoError.currencie = 'Currencie is not valid';
+    setTimeout(() => infoError.currencie = '', time);
+  }
   return valid;
 }

@@ -9,7 +9,7 @@
     </p>
     <b-button 
       type="is-primary"
-      label="Subscribe"
+      :label="labelBtnSubcription"
       class="has-text-weight-bold px-6"
       @click="goToPortal()"/>
   </div>
@@ -28,6 +28,10 @@ export default {
     styleSubcription() {
       if (['Active', 'Trial'].includes(this.subscriptionLabel)) return 'has-text-success';
       return 'has-text-inactive';
+    },
+    labelBtnSubcription() {
+      if (['Trial'].includes(this.subscriptionLabel)) return 'Subscribe';
+      return 'Manage Subscription';
     }
   },
   methods: {
