@@ -32,12 +32,12 @@ export function validation(
     infoError.lastName = 'Last name is not valid';
     setTimeout(() => infoError.lastName = '', time);
   }
-  if (fiels.includes('callingCode') && !infoData.callingCode) {
+  /* if (fiels.includes('callingCode') && !infoData.callingCode) {
     if (!Array.isArray(infoError.phone)) infoError.phone = [];
     valid = false;
     infoError.phone.push('Calling Code is not valid');
     setTimeout(() => infoError.phone = '', time);
-  }
+  } */
   if (fiels.includes('phone') && !infoData.phone) {
     if (!Array.isArray(infoError.phone)) infoError.phone = [];
     valid = false;
@@ -51,7 +51,7 @@ export function validation(
   }
   if (fiels.includes('paystackKey') && !infoData.paystackKey) {
     valid = false;
-    infoError.paystackKey = 'Paystack Public Key';
+    infoError.paystackKey = 'Enter Paystack Secret Key';
     setTimeout(() => infoError.paystackKey = '', time);
   }
   if (fiels.includes('currencie') && !infoData.currencie) {

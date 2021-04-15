@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "paystack-for-beds24"
+  },
+  "targets": {
+    "paystack-for-beds24": {
+      "hosting": {
+        "pay": [
+          "pay-pastack"
+        ]
+      }
+    }
   }
 }

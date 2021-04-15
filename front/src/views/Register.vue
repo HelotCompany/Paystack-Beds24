@@ -9,7 +9,7 @@
       </div>
       <div class="column is-narrow px-6">
         <h1 class="has-text-centered title mb-6">Get started</h1>
-        <form @submit.prevent="proceed">
+        <form @submit.prevent="proceed" class="mb-5">
            <b-field 
             label="Email Address"
             custom-class="has-text-centered"
@@ -65,7 +65,7 @@ export default {
       email: '',
       errorEmail: '',
       errorPrivacyPolicy: '',
-      privacyPolicy: true,
+      privacyPolicy: false,
       time: 4000,
     }
   },
@@ -87,7 +87,7 @@ export default {
       if (!this.privacyPolicy) {
         valid = false
         const that = this;
-        this.errorPrivacyPolicy = 'Validation required';
+        this.errorPrivacyPolicy = 'You must agree to our terms';
         setTimeout(() => that.errorPrivacyPolicy = '', this.time);
       }
       if (!valid) return;

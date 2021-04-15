@@ -5,6 +5,8 @@
     ]
   },
   "hosting": {
+    "target": "pay",
+    "public": "public",
     "rewrites": [ {
       "source": "**",
       "function": "app"

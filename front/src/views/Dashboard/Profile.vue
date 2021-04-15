@@ -44,14 +44,14 @@
             label="Phone"
             :type="infoError.phone ? 'is-danger' : ''"
             :message="infoError.phone">
-            <b-select v-model="infoData.callingCode" :disabled="!edit">
+            <!-- <b-select v-model="infoData.callingCode" :disabled="!edit">
               <option
                 v-for="code in callingCodes"
                 :value="code"
                 :key="code">
                 +{{ code }}
               </option>
-            </b-select>
+            </b-select> -->
             <b-input 
               custom-class="custum-input"
               v-model="infoData.phone"
@@ -124,7 +124,6 @@ export default {
         email: '',
         phone: '',
         paystackKey: '',
-        callingCode: '',
         currencie: '',
       },
       infoError: {
@@ -143,7 +142,6 @@ export default {
         'email',
         'firstName',
         'lastName',
-        'callingCode',
         'phone',
         'paystackKey',
         'currencie',
@@ -159,7 +157,6 @@ export default {
         this.infoData.email = val.email;
         this.infoData.phone = val.phone;
         this.infoData.paystackKey = val.paystackKey;
-        this.infoData.callingCode = val.callingCode;
         this.infoData.currencie = val.currencie || val.country.currencies[0].code || '';
       },
       deep: true,
@@ -214,7 +211,6 @@ export default {
       this.infoData.email = this.user.email;
       this.infoData.phone = this.user.phone;
       this.infoData.paystackKey = this.user.paystackKey;
-      this.infoData.callingCode = this.user.callingCode;
       this.infoData.currencie = this.user.currencie || this.user.country.currencies[0].code || '';
       this.edit = false;
     }

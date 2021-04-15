@@ -125,8 +125,8 @@ app.post('/create-checkout-session', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/RedirectPayStripe/${userId}?paysuccess=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/RedirectPayStripe/${userId}?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}`,
+      cancel_url: `${origin}`,
     });
     await db.collection('users').doc(userId).update({
       lastSubscriptionId: session.id,
@@ -177,7 +177,6 @@ app.post('/init-subscription', async (req, res) => {
       firstName,
       lastName,
       paystackKey,
-      callingCode,
       country
     } = req.body;
     const customer = await stripe.customers.create({
@@ -199,8 +198,8 @@ app.post('/init-subscription', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/RedirectPayStripe?paysuccess=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/RedirectPayStripe?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}`,
+      cancel_url: `${origin}`,
       metadata: {
         userId,
       }
@@ -214,8 +213,9 @@ app.post('/init-subscription', async (req, res) => {
       paystackKey,
       dateCeate: new Date(),
       customerId: customer.id,
-      callingCode,
-      country
+      country,
+      currencie: country.currencies ? country.currencies[0].code : '',
+      callingCode: country.callingCodes ? country.callingCodes[0] : '',
     });
     res.send({ sessionId: session.id, publishableKey: config.stripe.pk });
   } catch (error) {
@@ -282,7 +282,7 @@ app.post('/create-customer-portal-session/:id', async (req, res) => {
     const origin = req.get('origin');
     const session = await stripe.billingPortal.sessions.create({
       customer: doc.data().customerId,
-      return_url: origin,
+      return_url: origin + '/Dashboard',
     });
     res.send(session.url);
   } catch (error) {
@@ -300,9 +300,7 @@ app.post('/webhook', async (req, res) => {
   const { data, type } = req.body
   switch (type) {
     case 'invoice.payment_failed':
-      console.log('type =>', type);
-      console.log('data.object.id =>', data);
-      var querySnapshot = await db.collection('users').where('subscriptionId', '==', data.object.id).get();
+      var querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
       var user = null;
       querySnapshot.forEach((doc) => {
         user = doc.data();
@@ -311,7 +309,7 @@ app.post('/webhook', async (req, res) => {
         res.status(400);
         return res.send({
           error: {
-            message: 'This subscription does not exist in the database',
+            message: 'This customer does not exist in the database',
           }
         });
       }
@@ -322,9 +320,7 @@ app.post('/webhook', async (req, res) => {
         });
       break;
     case 'invoice.paid':
-      console.log('type =>', type);
-      console.log('data.object.id =>', data);
-      querySnapshot = await db.collection('users').where('subscriptionId', '==', data.object.id).get();
+      querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
       user = null;
       querySnapshot.forEach((doc) => {
         user = doc.data();
@@ -333,7 +329,7 @@ app.post('/webhook', async (req, res) => {
         res.status(400);
         return res.send({
           error: {
-            message: 'This subscription does not exist in the database',
+            message: 'This customer does not exist in the database',
           }
         });
       }
@@ -341,6 +337,7 @@ app.post('/webhook', async (req, res) => {
         .update({
           bed24Key: helper.generateHexString(60),
           payementUrl: `${req.protocol}://${req.get('host')}/p/${user.userId}`,
+          subscriptionId: data.object.subscription
         });
       break;
     default:

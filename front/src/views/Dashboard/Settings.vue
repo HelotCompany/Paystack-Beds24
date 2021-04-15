@@ -6,6 +6,20 @@
         <div class="column is-12">
           <b-field 
             label="Bed24 Key">
+            <template #label>
+              Bed24 Key
+              <b-tooltip type="is-color-background">
+                <b-icon
+                  icon="help-circle"
+                  type="is-success"
+                  size="is-small">
+                </b-icon>
+                <template v-slot:content>
+                  <b>Bed24 Key:</b> <br>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </template>
+              </b-tooltip>
+            </template>
             <b-input 
               custom-class="custum-input"
               v-model="user.bed24Key"
@@ -25,6 +39,20 @@
         <div class="column is-12">
           <b-field 
             label="Payment Url">
+            <template #label>
+              Payment Url
+              <b-tooltip type="is-color-background">
+                <b-icon
+                  icon="help-circle"
+                  type="is-success"
+                  size="is-small">
+                </b-icon>
+                <template v-slot:content>
+                  <b>Payment Url:</b> <br>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </template>
+              </b-tooltip>
+            </template>
             <b-input 
               custom-class="custum-input"
               v-model="user.payementUrl"
@@ -44,6 +72,20 @@
         <div class="column is-12">
           <b-field 
             label="Post data">
+            <template #label>
+              Post data
+              <b-tooltip type="is-color-background">
+                <b-icon
+                  icon="help-circle"
+                  type="is-success"
+                  size="is-small">
+                </b-icon>
+                <template v-slot:content>
+                  <b>Post data:</b> <br>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                </template>
+              </b-tooltip>
+            </template>
             <b-input 
               custom-class="custum-input"
               v-model="code"

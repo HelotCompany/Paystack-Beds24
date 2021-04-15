@@ -14,7 +14,7 @@
         <h4 class="has-text-centered subtitle">Manage your account effectively</h4>
       </div>
       <div class="column is-narrow px-6">
-        <form class="columns is-multiline is-centered">
+        <form @submit.prevent="save()"  class="columns is-multiline is-centered">
           <div class="column is-6">
             <b-field 
               label="First Name"
@@ -54,14 +54,14 @@
               label="Phone"
               :type="infoError.phone ? 'is-danger' : ''"
               :message="infoError.phone">
-              <b-select v-model="infoData.callingCode">
+              <!-- <b-select v-model="infoData.callingCode">
                 <option
                   v-for="code in callingCodes"
                   :value="code"
                   :key="code">
                   +{{ code }}
                 </option>
-              </b-select>
+              </b-select> -->
               <b-input 
                 custom-class="custum-input"
                 v-model="infoData.phone"
@@ -139,7 +139,6 @@ export default {
         phone: '',
         paystackKey: '',
         country: '',
-        callingCode: '',
       },
       infoError: {
         firstName: '',
@@ -204,7 +203,7 @@ export default {
     try {
       this.user = await getCurrentUser();
       this.contries = (await getAllContries()).data;
-      this.callingCodes = this.contries
+      /* this.callingCodes = this.contries
         .map(el => el.callingCodes)
         .flat()
         .reduce((acc, val) => {
@@ -212,8 +211,8 @@ export default {
           if (!acc.includes(val)) acc.push(val.replace(' ', ''));
           return acc;
         }, []);
-      this.callingCodes.sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
-      this.infoData.email = this.email;
+      this.callingCodes.sort((a, b) => parseInt(a, 10) - parseInt(b, 10)) */
+      this.infoData.email = this.user.email;
     } catch (error) {
       this.$router.push({ name: 'Register' });
     }
