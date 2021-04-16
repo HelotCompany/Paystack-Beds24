@@ -32,7 +32,6 @@ export default {
           txnid: this.$route.query.trxref,
           status: 1
         })).data;
-        console.log('🚀 ~ file: RedirectPay.vue ~ line 27 ~ redirect ~ result', result)
         postFormHTML('https://api.beds24.com/custompaymentgateway/notify.php', {
           key: result.bed24Key,
           bookid: this.$route.params.bookId,
@@ -44,8 +43,6 @@ export default {
           type: 'is-primary',
         }); 
       } catch (error) {
-        console.log('🚀error', error)
-        console.log('🚀error.message', error.message)
         this.$buefy.toast.open({
           message: `Error when notifying Bead24: ${error.message}`,
           type: 'is-danger',

@@ -68,6 +68,18 @@ app.post('/p/:id', async (req, res) => {
         }
       });
     }
+    const querySnapshot = await db.collection('transaction_paystack')
+      .where('bookId', '==', bookid)
+      .where('userId', '==', id)
+      .get();
+    if (!querySnapshot.empty) {
+      res.status(200);
+      return res.send({
+        error: {
+          message: 'This reservation has already been made',
+        }
+      });
+    }
     const resultDoc = await db.collection('transaction_paystack').add({
       email,
       bookId: bookid,
@@ -97,6 +109,56 @@ app.post('/p/:id', async (req, res) => {
     });
   }
 })
+
+app.post('/check-paystack-booking', async (req, res) => {
+  const {
+    hotelId,
+    bookid,
+    txnid,
+    status,
+  } = req.body;
+  try {
+    const docUser = await db.collection('users').doc(hotelId).get();
+    if (!docUser.exists) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: 'This Hotel does not exist.',
+        }
+      });
+    }
+    const querySnapshot = await db.collection('transaction_paystack')
+      .where('bookId', '==', bookid)
+      .where('userId', '==', hotelId)
+      .get();
+    let transaction = null;
+    querySnapshot.forEach((doc) => {
+      transaction = doc.data();
+      transaction.id = doc.id;
+    });
+    if (!transaction) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: 'This transaction does not exist in the database',
+        }
+      });
+    }
+    await db.collection('transaction_paystack').doc(transaction.id)
+      .update({
+        txnid,
+        status,
+      });
+    res.send({ bed24Key: docUser.data().bed24Key });
+  } catch (e) {
+    res.status(400);
+    return res.send({
+      error: {
+        message: e.message,
+      }
+    });
+  }
+});
 
 app.post('/create-checkout-session', async (req, res) => {
   const { userId } = req.body;
@@ -380,31 +442,10 @@ app.post('/webhook', async (req, res) => {
       await db.collection('users').doc(user.userId)
         .update({
           bed24Key: helper.generateHexString(60),
-          payementUrl: `${req.protocol}://${req.get('host')}/p/${user.userId}`,
+          payementUrl: `${config.global.url_base_back}/p/${user.userId}`,
           subscriptionId: data.object.subscription
         });
       break;
-    /* case 'invoice.paid':
-      querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
-      user = null;
-      querySnapshot.forEach((doc) => {
-        user = doc.data();
-      });
-      if (!user) {
-        res.status(400);
-        return res.send({
-          error: {
-            message: 'This customer does not exist in the database',
-          }
-        });
-      }
-      await db.collection('users').doc(user.userId)
-        .update({
-          bed24Key: helper.generateHexString(60),
-          payementUrl: `${req.protocol}://${req.get('host')}/p/${user.userId}`,
-          subscriptionId: data.object.subscription
-        });
-      break; */
     default:
   }
   res.sendStatus(200);
