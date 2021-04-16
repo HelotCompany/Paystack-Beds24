@@ -30,6 +30,11 @@ export async function checkoutSubscription(id) {
   return response;
 }
 
+export async function createSession(id) {
+  const response = await HTTP.post(`create-session/${id}`);
+  return response;
+}
+
 export async function createCustomerPortalSession(id) {
   const response = await HTTP.post(`create-customer-portal-session/${id}`);
   return response;

@@ -26,6 +26,7 @@ export default new Vuex.Store({
   getters: {
     userEmail: (state) => state.email,
     user: (state) => state.user,
+    subscriptionId: (state) => state.user ? state.user.subscriptionId : '',
     subscriptionValid: (state) => state.user ? state.user.subscriptionValid : false,
     subscriptionLabel: (state) => state.user ? state.user.subscriptionLabel : 'Inactive',
     userId: (state) => state.user ? state.user.uid : '',

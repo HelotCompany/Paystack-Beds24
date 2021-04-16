@@ -38,7 +38,7 @@ export function validation(
     infoError.phone.push('Calling Code is not valid');
     setTimeout(() => infoError.phone = '', time);
   } */
-  if (fiels.includes('phone') && !infoData.phone) {
+  if (fiels.includes('phone') && !/[0-9]{8,}/g.test(infoData.phone)) {
     if (!Array.isArray(infoError.phone)) infoError.phone = [];
     valid = false;
     infoError.phone.push('Phone is not valid');

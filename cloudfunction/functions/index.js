@@ -198,8 +198,8 @@ app.post('/init-subscription', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: `${origin}`,
-      cancel_url: `${origin}`,
+      success_url: `${origin}/Dashboard?_r=a`,
+      cancel_url: `${origin}/Dashboard?_r=b`,
       metadata: {
         userId,
       }
@@ -296,6 +296,50 @@ app.post('/create-customer-portal-session/:id', async (req, res) => {
 
 });
 
+app.post('/create-session/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const doc = await db.collection('users').doc(userId).get();
+    if (!doc.exists) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: 'This user does not exist.',
+        }
+      });
+    }
+    const origin = req.get('origin');
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      customer: doc.data().customerId,
+      subscription_data: {
+        trial_period_days:  config.stripe.trial_period_days
+      },
+      line_items: [
+        {
+          price: config.stripe.price_k,
+          quantity: 1,
+        },
+      ],
+      success_url: `${origin}/Dashboard?_r=a`,
+      cancel_url: `${origin}/Dashboard?_r=b`,
+      metadata: {
+        userId,
+      }
+    });
+    res.send({ sessionId: session.id, publishableKey: config.stripe.pk });
+  } catch (error) {
+    res.status(400);
+    return res.send({
+      error: {
+        message: error.message,
+      }
+    });
+  }
+
+});
+
 app.post('/webhook', async (req, res) => {
   const { data, type } = req.body
   switch (type) {
@@ -319,7 +363,7 @@ app.post('/webhook', async (req, res) => {
           payementUrl: '',
         });
       break;
-    case 'invoice.paid':
+    case 'invoice.payment_succeeded':
       querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
       user = null;
       querySnapshot.forEach((doc) => {
@@ -340,6 +384,27 @@ app.post('/webhook', async (req, res) => {
           subscriptionId: data.object.subscription
         });
       break;
+    /* case 'invoice.paid':
+      querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
+      user = null;
+      querySnapshot.forEach((doc) => {
+        user = doc.data();
+      });
+      if (!user) {
+        res.status(400);
+        return res.send({
+          error: {
+            message: 'This customer does not exist in the database',
+          }
+        });
+      }
+      await db.collection('users').doc(user.userId)
+        .update({
+          bed24Key: helper.generateHexString(60),
+          payementUrl: `${req.protocol}://${req.get('host')}/p/${user.userId}`,
+          subscriptionId: data.object.subscription
+        });
+      break; */
     default:
   }
   res.sendStatus(200);

@@ -73,6 +73,7 @@ export default {
             }
             if (user.subscriptionId) {
               const subscription = (await checkoutSubscription(user.subscriptionId)).data;
+              console.log('🚀 ~ file: Index.vue ~ line 76 ~ this.eventUser=awaitdb.collection ~ subscription', subscription)
               if (['active', 'trialing'].includes(subscription.status)) {
                 user.subscriptionValid = true;
                 if (subscription.status === 'active') user.subscriptionLabel = 'Active';
