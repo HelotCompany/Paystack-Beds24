@@ -61,6 +61,14 @@ app.post('/p/:id', async (req, res) => {
         }
       });
     }
+    if (!doc.data().subscriptionId) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: 'No existing subscription',
+        }
+      });
+    }
     const { email, bookid, amount, currency, description } = req.body;
     let isValid = true;
     const mgs = [];
@@ -447,6 +455,7 @@ app.post('/webhook', async (req, res) => {
         .update({
           bed24Key: '',
           payementUrl: '',
+          subscriptionId: '',
         });
       break;
     case 'customer.subscription.deleted':
@@ -467,6 +476,7 @@ app.post('/webhook', async (req, res) => {
         .update({
           bed24Key: '',
           payementUrl: '',
+          subscriptionId: '',
         });
       break;
     case 'invoice.payment_succeeded':
