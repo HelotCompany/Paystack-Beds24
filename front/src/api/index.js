@@ -30,6 +30,11 @@ export async function checkoutSubscription(id) {
   return response;
 }
 
+export async function remoteConfig(id) {
+  const response = await HTTP.get(`remote-config/${id}`);
+  return response;
+}
+
 export async function createSession(id) {
   const response = await HTTP.post(`create-session/${id}`);
   return response;

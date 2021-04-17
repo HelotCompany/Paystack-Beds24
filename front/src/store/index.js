@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     email: '',
     user: null,
+    config: {},
   },
   mutations: {
     SET_EMAIL: (state, val) => {
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     SET_USER: (state, val) => {
       state.user = val;
+    },
+    SET_CONFIG: (state, val) => {
+      state.config = val;
     },
     RESET: (state) => {
       state.user = null;
@@ -30,6 +34,7 @@ export default new Vuex.Store({
     subscriptionValid: (state) => state.user ? state.user.subscriptionValid : false,
     subscriptionLabel: (state) => state.user ? state.user.subscriptionLabel : 'Inactive',
     userId: (state) => state.user ? state.user.uid : '',
+    config: (state) => state.config,
   },
   plugins: [createPersistedState({
     paths: ['email', 'user'],

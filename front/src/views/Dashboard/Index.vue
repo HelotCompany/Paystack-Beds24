@@ -24,7 +24,7 @@ import Topbar from '@/components/Dashboard/Topbar.vue';
 import Copywrinting from '@/components/general/Copywrinting.vue';
 import getCurrentUser from '@/services/firebase';
 import { db } from '@/pluging/firebase';
-import { checkoutSubscription } from '@/api';
+import { checkoutSubscription, remoteConfig } from '@/api';
 
 export default {
   components: {
@@ -59,6 +59,7 @@ export default {
     ...mapMutations({
       setEmail: 'SET_EMAIL',
       setUser: 'SET_USER',
+      setConfig: 'SET_CONFIG',
     }),
     async getDataUser() {
       const loadingComponent = this.$buefy.loading.open();
@@ -73,7 +74,6 @@ export default {
             }
             if (user.subscriptionId) {
               const subscription = (await checkoutSubscription(user.subscriptionId)).data;
-              console.log('🚀 ~ file: Index.vue ~ line 76 ~ this.eventUser=awaitdb.collection ~ subscription', subscription)
               if (['active', 'trialing'].includes(subscription.status)) {
                 user.subscriptionValid = true;
                 if (subscription.status === 'active') user.subscriptionLabel = 'Active';
@@ -81,6 +81,8 @@ export default {
               }
             }
             this.user = user;
+            const config = (await remoteConfig(user.uid)).data;
+            this.setConfig(config.parameters);
           } else {
             this.$router.push({ name: 'CreateAccount' });
           }

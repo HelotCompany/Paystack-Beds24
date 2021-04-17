@@ -16,7 +16,7 @@
                 </b-icon>
                 <template v-slot:content>
                   <b>Bed24 Key:</b> <br>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  {{bed24KeyDescription}}
                 </template>
               </b-tooltip>
             </template>
@@ -49,7 +49,7 @@
                 </b-icon>
                 <template v-slot:content>
                   <b>Payment Url:</b> <br>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  {{paymentUrlDescription}}
                 </template>
               </b-tooltip>
             </template>
@@ -82,7 +82,7 @@
                 </b-icon>
                 <template v-slot:content>
                   <b>Post data:</b> <br>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                  {{postDataDescription}}
                 </template>
               </b-tooltip>
             </template>
@@ -118,10 +118,23 @@ export default {
   computed: {
     ...mapGetters({
       user: 'user',
+      config: 'config',
     }),
     code() {
       const currencie = this.user ? this.user.currencie || this.user.country.currencies[0].code : ''
       return `currency=${currencie}&bookid=[BOOKID]&amount=[PAYMENTAMOUNT]&email=[GUESTEMAIL]&description=Deposit Payment for [PROPERTYNAME]`
+    },
+    bed24KeyDescription() {
+      if (!this.config.bed24KeyDescription) return '';
+      return this.config.bed24KeyDescription.defaultValue.value;
+    },
+    paymentUrlDescription() {
+      if (!this.config.paymentUrlDescription) return '';
+      return this.config.paymentUrlDescription.defaultValue.value;
+    },
+    postDataDescription() {
+      if (!this.config.postDataDescription) return '';
+      return this.config.postDataDescription.defaultValue.value;
     },
   },
   methods: {
@@ -149,7 +162,8 @@ export default {
       }
     },
   },
-  async mounted() {}
+  async mounted() {
+  }
 }
 </script>
 

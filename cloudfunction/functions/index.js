@@ -17,6 +17,30 @@ app.use(cors);
 app.options('*', cors);
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get('/remote-config/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await db.collection('users').doc(id).get();
+    if (!doc.exists) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: 'This user does not exist.',
+        }
+      });
+    }
+    const template = await admin.remoteConfig().getTemplate();
+    res.send(JSON.stringify(template));
+  } catch (error) {
+    res.status(400);
+    return res.send({
+      error: {
+        message: error.message,
+      }
+    });
+  }
+})
+
 app.post('/p/:id', async (req, res) => {
   try {
     const { id } = req.params;

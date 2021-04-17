@@ -37,7 +37,7 @@ export default {
           bookid: this.$route.params.bookId,
           txnid: this.$route.query.trxref,
           status: 1
-        })
+        });
         this.$buefy.toast.open({
           message: 'Beds24 is notify',
           type: 'is-primary',

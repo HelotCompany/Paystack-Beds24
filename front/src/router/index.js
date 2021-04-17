@@ -57,6 +57,11 @@ const routes = [
     component: () => import('../views/RedirectPay.vue')
   },
   {
+    path: '/Success',
+    name: 'Success',
+    component: () => import('../views/Success.vue')
+  },
+  {
     path: '/RedirectPayStripe',
     name: 'RedirectPayStripe',
     component: () => import('../views/RedirectPayStripe.vue')
