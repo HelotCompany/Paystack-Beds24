@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'production') {
     };
   } else {
     config = {
-      BASE_URL: 'https://pay-pastack.web.app/',
+      BASE_URL: 'https://pay.stack.helot.co/',
     };
   }
 } else {
