@@ -449,6 +449,26 @@ app.post('/webhook', async (req, res) => {
           payementUrl: '',
         });
       break;
+    case 'customer.subscription.deleted':
+      querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
+      user = null;
+      querySnapshot.forEach((doc) => {
+        user = doc.data();
+      });
+      if (!user) {
+        res.status(400);
+        return res.send({
+          error: {
+            message: 'This customer does not exist in the database',
+          }
+        });
+      }
+      await db.collection('users').doc(user.userId)
+        .update({
+          bed24Key: '',
+          payementUrl: '',
+        });
+      break;
     case 'invoice.payment_succeeded':
       querySnapshot = await db.collection('users').where('customerId', '==', data.object.customer).get();
       user = null;

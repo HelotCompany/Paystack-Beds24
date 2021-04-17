@@ -14,7 +14,7 @@ export function postFormHTML(path, params, method='post') {
 
   document.body.appendChild(form);
   form.submit();
-  window.location.href = window.location.origin + '/Success';
+  // window.location.href = window.location.origin + '/Success';
 }
 
 export const NOTINH = '';
